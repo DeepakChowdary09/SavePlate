@@ -1,273 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Focus Tracker Pro</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-      margin: 0;
-      background: linear-gradient(180deg, #0d1117 0%, #1b2735 100%);
-      color: white;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Focus Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        margin: 0;
+        background: linear-gradient(180deg, #0d1117 0%, #1b2735 100%);
+        color: white;
+      }
 
-    .container {
-      background: rgba(20, 20, 20, 0.8);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 4px 30px rgba(0, 255, 255, 0.2);
-      text-align: center;
-      max-width: 700px;
-      width: 90%;
-      margin-top: 20px;
-    }
+      .container {
+        background: rgba(20, 20, 20, 0.8);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 4px 30px rgba(0, 255, 255, 0.2);
+        text-align: center;
+        max-width: 700px;
+        width: 90%;
+        margin-top: 20px;
+      }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      color: #00e6e6;
-    }
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        color: #00e6e6;
+      }
 
-    .motivation {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 25px;
-      color: #fff;
-      text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
-      animation: glow 3s ease-in-out infinite alternate;
-    }
+      .motivation {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 25px;
+        color: #fff;
+        text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+        animation: glow 3s ease-in-out infinite alternate;
+      }
 
-    @keyframes glow {
-      from { text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; }
-      to { text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff; }
-    }
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+        }
+        to {
+          text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+        }
+      }
 
-    select, input, button {
-      padding: 10px 15px;
-      margin: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 1rem;
-    }
+      select,
+      input,
+      button {
+        padding: 10px 15px;
+        margin: 10px;
+        border-radius: 8px;
+        border: none;
+        font-size: 1rem;
+      }
 
-    button {
-      cursor: pointer;
-      background: #00bcd4;
-      color: white;
-      transition: 0.3s;
-    }
+      button {
+        cursor: pointer;
+        background: #00bcd4;
+        color: white;
+        transition: 0.3s;
+      }
 
-    button:hover {
-      background: #0097a7;
-    }
+      button:hover {
+        background: #0097a7;
+      }
 
-    #countdown {
-      font-size: 3rem;
-      font-weight: bold;
-      margin: 30px 0;
-      color: #00e6e6;
-    }
+      #countdown {
+        font-size: 3rem;
+        font-weight: bold;
+        margin: 30px 0;
+        color: #00e6e6;
+      }
 
-    canvas {
-      background: rgba(255,255,255,0.05);
-      border-radius: 10px;
-      margin-top: 25px;
-      padding: 15px;
-    }
+      canvas {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        margin-top: 25px;
+        padding: 15px;
+      }
 
-    #dateCountdown {
-      font-size: 1.8rem;
-      margin: 25px 0;
-      font-weight: 800;
-      color: #00ffff;
-      text-align: center;
-    }
+      #dateCountdown {
+        font-size: 1.8rem;
+        margin: 25px 0;
+        font-weight: 800;
+        color: #00ffff;
+        text-align: center;
+      }
 
-    #streak {
-      margin-top: 10px;
-      font-size: 1.2rem;
-      color: #00ffae;
-    }
-  </style>
-</head>
-<body>
-  <div id="dateCountdown"></div>
-  <div class="container">
-    <h1>🎯 Focus Tracker Pro</h1>
-    <div class="motivation"><b>Winter Arc: You got dreams to chase, not people to impress</b> 
-</div>
+      #streak {
+        margin-top: 10px;
+        font-size: 1.2rem;
+        color: #00ffae;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="dateCountdown"></div>
+    <div class="container">
+      <h1>🎯 Focus Tracker Pro</h1>
+      <div class="motivation">
+        <b>Winter Arc: You got dreams to chase, not people to impress</b>
+      </div>
 
-    <label>Focus Mode:</label>
-    <select id="mode">
-      <option value="deep">Deep Work</option>
-      <option value="study">Study</option>
-      <option value="coding">Coding</option>
-      <option value="reading">Reading</option>
-    </select>
-
-    <label>Set Daily Goal (hrs):</label>
-    <input type="number" id="goalInput" value="0.25" min="1" max="12" />
-
-    <div>
-      <label>Session Duration:</label>
-      <select id="focusDuration">
-<option value="10">10 min</option>
-<option value="15">15 min</option>
-        <option value="30">30 min</option>
-<option value="45">45 min</option>
-
-        <option value="60">1 hr</option>
-        <option value="120">2 hr</option>
-        <option value="180">3 hr</option>
-        <option value="240">4 hr</option>
-        <option value="300">5 hr</option>
-        <option value="360">6 hr</option>
-        <option value="480">8 hr</option>
-        <option value="600">10 hr</option>
-        <option value="720">12 hr</option>
+      <label>Focus Mode:</label>
+      <select id="mode">
+        <option value="deep">Deep Work</option>
+        <option value="study">Study</option>
+        <option value="coding">Coding</option>
+        <option value="reading">Reading</option>
       </select>
+
+      <label>Set Daily Goal (hrs):</label>
+      <input type="number" id="goalInput" value="0.25" min="1" max="12" />
+
+      <div>
+        <label>Session Duration:</label>
+        <select id="focusDuration">
+          <option value="10">10 min</option>
+          <option value="15">15 min</option>
+          <option value="30">30 min</option>
+          <option value="45">45 min</option>
+
+          <option value="60">1 hr</option>
+          <option value="120">2 hr</option>
+          <option value="180">3 hr</option>
+          <option value="240">4 hr</option>
+          <option value="300">5 hr</option>
+          <option value="360">6 hr</option>
+          <option value="480">8 hr</option>
+          <option value="600">10 hr</option>
+          <option value="720">12 hr</option>
+        </select>
+      </div>
+
+      <button id="startFocus">Start Focus</button>
+      <button id="pauseFocus">Pause</button>
+      <button id="resetFocus">Reset</button>
+
+      <div id="countdown">00:00:00</div>
+      <div id="streak">🔥 Streak: 0 days</div>
+
+      <canvas id="focusChart" width="600" height="250"></canvas>
     </div>
 
-    <button id="startFocus">Start Focus</button>
-    <button id="pauseFocus">Pause</button>
-    <button id="resetFocus">Reset</button>
+    <script>
+      const countdownEl = document.getElementById("countdown");
+      const focusChartEl = document.getElementById("focusChart");
+      const dateCountdownEl = document.getElementById("dateCountdown");
+      const streakEl = document.getElementById("streak");
 
-    <div id="countdown">00:00:00</div>
-    <div id="streak">🔥 Streak: 0 days</div>
+      let timer,
+        remainingMs = 0,
+        isPaused = false;
 
-    <canvas id="focusChart" width="600" height="250"></canvas>
-  </div>
-
-  <script>
-    const countdownEl = document.getElementById('countdown');
-    const focusChartEl = document.getElementById('focusChart');
-    const dateCountdownEl = document.getElementById('dateCountdown');
-    const streakEl = document.getElementById('streak');
-
-    let timer, remainingMs = 0, isPaused = false;
-
-    document.getElementById('startFocus').addEventListener('click', () => {
-      if (!isPaused) {
-        const durationMin = parseInt(document.getElementById('focusDuration').value);
-        remainingMs = durationMin * 60 * 1000;
-      }
-      startTimer();
-    });
-
-    document.getElementById('pauseFocus').addEventListener('click', () => {
-      clearInterval(timer);
-      isPaused = true;
-    });
-
-    document.getElementById('resetFocus').addEventListener('click', () => {
-      clearInterval(timer);
-      countdownEl.innerText = '00:00:00';
-      isPaused = false;
-      remainingMs = 0;
-    });
-
-    function startTimer() {
-      const endTime = new Date().getTime() + remainingMs;
-      clearInterval(timer);
-      timer = setInterval(() => {
-        const now = new Date().getTime();
-        remainingMs = endTime - now;
-
-        if (remainingMs <= 0) {
-          clearInterval(timer);
-          countdownEl.innerText = 'Session Complete!';
-          saveSession();
-          startBreak();
-        } else {
-          const hrs = Math.floor((remainingMs / (1000 * 60 * 60)) % 24);
-          const mins = Math.floor((remainingMs / (1000 * 60)) % 60);
-          const secs = Math.floor((remainingMs / 1000) % 60);
-          countdownEl.innerText = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      document.getElementById("startFocus").addEventListener("click", () => {
+        if (!isPaused) {
+          const durationMin = parseInt(
+            document.getElementById("focusDuration").value
+          );
+          remainingMs = durationMin * 60 * 1000;
         }
-      }, 1000);
-    }
-
-    function startBreak() {
-      setTimeout(() => {
-        alert('🧘 Break Over! Time to refocus for the next 25 mins.');
-      }, 5 * 60 * 1000);
-    }
-
-    function saveSession() {
-      const today = new Date().toISOString().split('T')[0];
-      const durationMin = parseInt(document.getElementById('focusDuration').value);
-      const data = JSON.parse(localStorage.getItem('focusData') || '{}');
-      data[today] = (data[today] || 0) + durationMin;
-      localStorage.setItem('focusData', JSON.stringify(data));
-      updateChart();
-      updateStreak(data);
-    }
-
-    function updateStreak(data) {
-      const dates = Object.keys(data).sort();
-      let streak = 0;
-      for (let date of dates) {
-        if (data[date] >= 60) streak++; // 3 hours minimum
-      }
-      streakEl.innerText = `🔥 Streak: ${streak} days`;
-    }
-
-    let chartInstance;
-    function updateChart() {
-      const data = JSON.parse(localStorage.getItem('focusData') || '{}');
-      const labels = Object.keys(data).slice(-7);
-      const values = Object.values(data).slice(-7).map(v => v / 60);
-
-      if (chartInstance) chartInstance.destroy();
-      chartInstance = new Chart(focusChartEl, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Hours Focused',
-            data: values,
-            backgroundColor: '#00e6e6',
-            borderRadius: 8
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 12,
-              title: { display: true, text: 'Hours' },
-              grid: { color: 'rgba(255,255,255,0.2)' },
-              ticks: { color: '#fff' }
-            },
-            x: {
-              ticks: { color: '#fff' },
-              grid: { color: 'rgba(255,255,255,0.1)' }
-            }
-          },
-          plugins: { legend: { display: false } }
-        }
+        startTimer();
       });
-    }
 
-    const targetDate = new Date('2025-12-30T00:00:00').getTime();
-    setInterval(() => {
-      const now = new Date().getTime();
-      const dist = targetDate - now;
-      const days = Math.floor(dist / (1000 * 60 * 60 * 24));
-      const hrs = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const mins = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
-      dateCountdownEl.innerText = `⏳ Countdown to Dec 30, 2025 — ${days}d ${hrs}h ${mins}m left`;
-    }, 1000);
+      document.getElementById("pauseFocus").addEventListener("click", () => {
+        clearInterval(timer);
+        isPaused = true;
+      });
 
-    updateChart();
-  </script>
-</body>
+      document.getElementById("resetFocus").addEventListener("click", () => {
+        clearInterval(timer);
+        countdownEl.innerText = "00:00:00";
+        isPaused = false;
+        remainingMs = 0;
+      });
+
+      function startTimer() {
+        const endTime = new Date().getTime() + remainingMs;
+        clearInterval(timer);
+        timer = setInterval(() => {
+          const now = new Date().getTime();
+          remainingMs = endTime - now;
+
+          if (remainingMs <= 0) {
+            clearInterval(timer);
+            countdownEl.innerText = "Session Complete!";
+            saveSession();
+            startBreak();
+          } else {
+            const hrs = Math.floor((remainingMs / (1000 * 60 * 60)) % 24);
+            const mins = Math.floor((remainingMs / (1000 * 60)) % 60);
+            const secs = Math.floor((remainingMs / 1000) % 60);
+            countdownEl.innerText = `${String(hrs).padStart(2, "0")}:${String(
+              mins
+            ).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+          }
+        }, 1000);
+      }
+
+      function startBreak() {
+        setTimeout(() => {
+          alert("🧘 Break Over! Time to refocus for the next 25 mins.");
+        }, 5 * 60 * 1000);
+      }
+
+      function saveSession() {
+        const today = new Date().toISOString().split("T")[0];
+        const durationMin = parseInt(
+          document.getElementById("focusDuration").value
+        );
+        const data = JSON.parse(localStorage.getItem("focusData") || "{}");
+        data[today] = (data[today] || 0) + durationMin;
+        localStorage.setItem("focusData", JSON.stringify(data));
+        updateChart();
+        updateStreak(data);
+      }
+
+      function updateStreak(data) {
+        const dates = Object.keys(data).sort();
+        let streak = 0;
+        for (let date of dates) {
+          if (data[date] >= 60) streak++; // 3 hours minimum
+        }
+        streakEl.innerText = `🔥 Streak: ${streak} days`;
+      }
+
+      let chartInstance;
+      function updateChart() {
+        const data = JSON.parse(localStorage.getItem("focusData") || "{}");
+        const labels = Object.keys(data).slice(-7);
+        const values = Object.values(data)
+          .slice(-7)
+          .map((v) => v / 60);
+
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(focusChartEl, {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [
+              {
+                label: "Hours Focused",
+                data: values,
+                backgroundColor: "#00e6e6",
+                borderRadius: 8,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 12,
+                title: { display: true, text: "Hours" },
+                grid: { color: "rgba(255,255,255,0.2)" },
+                ticks: { color: "#fff" },
+              },
+              x: {
+                ticks: { color: "#fff" },
+                grid: { color: "rgba(255,255,255,0.1)" },
+              },
+            },
+            plugins: { legend: { display: false } },
+          },
+        });
+      }
+
+      const targetDate = new Date("2025-12-30T00:00:00").getTime();
+      setInterval(() => {
+        const now = new Date().getTime();
+        const dist = targetDate - now;
+        const days = Math.floor(dist / (1000 * 60 * 60 * 24));
+        const hrs = Math.floor(
+          (dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const mins = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+        dateCountdownEl.innerText = `⏳ Countdown to Dec 30, 2025 — ${days}d ${hrs}h ${mins}m left`;
+      }, 1000);
+
+      updateChart();
+    </script>
+  </body>
 </html>
-
