@@ -4,39 +4,111 @@ import { useState } from "react";
 import { Plate }from "@/types/plate";
 import { createPlate , getPlates} from "@/Services/plate.service";
  
-export default  function DonorDashboard() {
-    const [plates,setPlates]= useState<Plate[]>(getPlates());
 
-    function handleCreatePlate() {
-        const newPlate:Plate ={
-            id:crypto.randomUUID(),
-            foodName:"Veg Biryani",
-            quantity:"2 servings",
-            pickupBy:new Date().toISOString(),
-            status:"POSTED"
+const INITIAL_FORM = {
+  foodName:"",
+  quantity:"",
+  pickupBy:"",
+};
 
-        };
-        createPlate (newPlate);
-        setPlates(prev => [...prev, newPlate]);
+export default function DonorDashboard(){
+const [plates,setPlates]= useState<Plate[]>(getPlates());
+const [form,setForm]= useState(INITIAL_FORM);
+const[error, setError] = useState<string | null>(null);
 
-    }
-    return(
-        <div className ="p-8 max-w-3xl">
-            <h1  className = "text-2xl font-bold mb-6"> Donor Dashboard</h1>
-            <button  
-            onClick ={handleCreatePlate}
-            className ="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Create Plate </button>
-
-        <div className ="mt-6 space-y-4">
-            {plates.length ===0 && (
-                <p className ="text-zinc-400 text-sm">No plates available.</p>
-
-            )}
+function handleChange(
+  e:React.ChangeEvent<HTMLInputElement>
+) {
+  setForm({
+    ...form,
+    [e.target.name]:e.target.value ,
+  });
+}
 
 
-            {plates.map((plate) => (
-                <div
+function handleSubmit(e: React.FormEvent){
+  e.preventDefault();
+  setError(null);
+
+
+  if(!form.foodName || !form.quantity || !form.pickupBy){
+    setError("All field are required.");
+    return;
+  }
+
+  const newPlate: Plate = {
+    id:crypto.randomUUID(),
+    foodName: form.foodName,
+    quantity:form.quantity,
+    pickupBy:form.pickupBy,
+    status:"POSTED",
+  };
+
+
+  createPlate(newPlate);
+  setPlates([...getPlates()]);
+  setForm(INITIAL_FORM);
+}
+
+return(
+  <div className="p-8 max-w-3xl">
+    <h1 className="text-2xl font-bold mb-6">Donor Dashboard</h1>
+
+    {/* Create Plate Form */}
+    
+    <form
+    onSubmit ={handleSubmit}
+    className ="border border-zinc-800 rounded-xl p-6 mb-8 space-y-4">
+      <h2 className ="font-bold  text-lg">Create Plate</h2>
+      {error && (
+        <p className ="text-red-400 text-sm">{error}</p>
+
+      )}
+
+      <input 
+      name="foodName"
+      placeholder="Food name (e.g., Veg Biryani)"
+      value ={form.foodName}
+      onChange={handleChange}
+      className ="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
+      />
+
+      <input 
+      name="quantity"
+      placeholder="Quantity (e.g., 10kg)"
+      value ={form.quantity}
+      onChange={handleChange}
+      className ="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
+      />
+
+        <input
+          name="pickupBy"
+          placeholder="Pickup by (e.g., 9:30 PM)"
+          value={form.pickupBy}
+          onChange={handleChange}
+          className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
+        />
+
+        <button 
+        type="submit"
+        className ="bg-emerald-500 text-black px-4 py-2 rounded-lg font-bold hover:bg-emerald-400 transition"
+>
+  Post Plate
+</button>
+    </form>
+
+
+
+ {/* Plates List */}
+      <div className="space-y-4">
+        {plates.length === 0 && (
+          <p className="text-zinc-400 text-sm">
+            No plates created yet.
+          </p>
+        )}
+
+        {plates.map((plate) => (
+          <div
             key={plate.id}
             className="border border-zinc-800 rounded-lg p-4"
           >
@@ -53,3 +125,5 @@ export default  function DonorDashboard() {
     </div>
   );
 }
+
+
