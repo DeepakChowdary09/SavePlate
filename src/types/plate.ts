@@ -11,4 +11,5 @@ export interface Plate {
   quantity: string;
   pickupBy: string;
   status: PlateStatus;
+   assignedTo?: string; // volunteer id (mock)
 }

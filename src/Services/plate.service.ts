@@ -1,12 +1,40 @@
 import { Plate } from "@/types/plate";
 
-const plates: Plate[] = [];
+const STORAGE_KEY = "plates";
 
-export function createPlate(plate: Plate): Plate {
-  plates.push(plate);
-  return plate;
+function load(): Plate[] {
+  if (typeof window === "undefined") return [];
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+}
+
+function save(plates: Plate[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(plates));
 }
 
 export function getPlates(): Plate[] {
-  return plates;
+  return load();
 }
+
+export function createPlate(plate: Plate): Plate {
+  const plates = load();
+  plates.push(plate);
+  save(plates);
+  return plate;
+}
+
+export function acceptPlate(
+  plateId: string,
+  volunteerId: string
+): Plate | null {
+  const plates = load();
+  const plate = plates.find((p) => p.id === plateId);
+
+  if (!plate || plate.status !== "POSTED") return null;
+
+  plate.status = "ASSIGNED";
+  plate.assignedTo = volunteerId;
+  save(plates);
+  return plate;
+}
+
+
