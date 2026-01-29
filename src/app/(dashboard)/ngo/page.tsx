@@ -37,7 +37,7 @@ export default function NGODashboard() {
             <div>
               <div className="font-bold">{plate.foodName}</div>
               <div className="text-sm text-zinc-400">
-                {plate.quantity} • Assigned volunteer
+                {plate.quantity} • The Volunteer has been Assigned
               </div>
             </div>
 
