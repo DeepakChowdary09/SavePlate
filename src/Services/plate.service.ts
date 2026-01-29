@@ -37,4 +37,18 @@ export function acceptPlate(
   return plate;
 }
 
+export function confirmDelivered(
+  plateId: string
+): Plate | null {
+  const plates = load();
+  const plate = plates.find((p) => p.id === plateId);
+
+  if (!plate || plate.status !== "ASSIGNED") {
+    return null;
+  }
+
+  plate.status = "DELIVERED";
+  save(plates);
+  return plate;
+}
 
