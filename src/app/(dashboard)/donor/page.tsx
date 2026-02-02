@@ -75,7 +75,7 @@ return(
 
       <input 
       name="quantity"
-      placeholder="Quantity (e.g., 10kg)"
+      placeholder="Quantity (e.g., persons)"
       value ={form.quantity}
       onChange={handleChange}
       className ="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
