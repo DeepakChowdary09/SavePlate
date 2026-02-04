@@ -12,4 +12,7 @@ export interface Plate {
   pickupBy: string;
   status: PlateStatus;
   assignedTo?: string;
+  
+  // 👇 ADD THIS LINE HERE
+  donorId: string; 
 }

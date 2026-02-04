@@ -1,85 +1,106 @@
 "use client";
 
 import { useState } from "react";
-import { Plate }from "@/types/plate";
-import { createPlate , getPlates} from "@/Services/plate.service";
- 
+import { useUser } from "@clerk/nextjs"; // 1. Import Clerk hook
+import { Plate } from "@/types/plate";
+import { createPlate, getPlates } from "@/Services/plate.service";
 
 const INITIAL_FORM = {
-  foodName:"",
-  quantity:"",
-  pickupBy:"",
+  foodName: "",
+  quantity: "",
+  pickupBy: "",
 };
 
-export default function DonorDashboard(){
-const [plates,setPlates]= useState<Plate[]>(getPlates());
-const [form,setForm]= useState(INITIAL_FORM);
-const[error, setError] = useState<string | null>(null);
+export default function DonorDashboard() {
+  // 2. Get current user context
+  const { user, isLoaded, isSignedIn } = useUser();
 
-function handleChange(
-  e:React.ChangeEvent<HTMLInputElement>
-) {
-  setForm({
-    ...form,
-    [e.target.name]:e.target.value ,
-  });
-}
+  const [plates, setPlates] = useState<Plate[]>(getPlates());
+  const [form, setForm] = useState(INITIAL_FORM);
+  const [error, setError] = useState<string | null>(null);
 
-
-function handleSubmit(e: React.FormEvent){
-  e.preventDefault();
-  setError(null);
-
-
-  if(!form.foodName || !form.quantity || !form.pickupBy){
-    setError("All field are required.");
-    return;
+  // 3. LOADING STATE: Wait for Clerk to load
+  if (!isLoaded) {
+    return <div className="p-8">Loading dashboard...</div>;
   }
 
-  const newPlate: Plate = {
-    id:crypto.randomUUID(),
-    foodName: form.foodName,
-    quantity:form.quantity,
-    pickupBy:form.pickupBy,
-    status:"POSTED",
-  };
+  // 4. ROLE CHECK: Restrict access specifically to 'donor' role
+  if (!isSignedIn || user?.publicMetadata.role !== "donor") {
+    return (
+      <div className="p-8 text-red-500 font-bold">
+        Access denied: This page is restricted to registered Donors.
+      </div>
+    );
+  }
 
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  }
 
-  createPlate(newPlate);
-  setPlates([...getPlates()]);
-  setForm(INITIAL_FORM);
-}
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
 
-return(
-  <div className="p-8 max-w-3xl">
-    <h1 className="text-2xl font-bold mb-6">Donor Dashboard</h1>
+    // TypeScript safety check
+    if (!user) return;
 
-    {/* Create Plate Form */}
-    
-    <form
-    onSubmit ={handleSubmit}
-    className ="border border-zinc-800 rounded-xl p-6 mb-8 space-y-4">
-      <h2 className ="font-bold  text-lg">Create Plate</h2>
-      {error && (
-        <p className ="text-red-400 text-sm">{error}</p>
+    if (!form.foodName || !form.quantity || !form.pickupBy) {
+      setError("All fields are required.");
+      return;
+    }
 
-      )}
+    const newPlate: Plate = {
+      id: crypto.randomUUID(),
+      foodName: form.foodName,
+      quantity: form.quantity,
+      pickupBy: form.pickupBy,
+      status: "POSTED",
+      // 5. IMPORTANT: Attach the real User ID to the plate
+      // (Ensure your Plate interface in "@/types/plate" includes a 'donorId' field)
+      donorId: user.id, 
+    };
 
-      <input 
-      name="foodName"
-      placeholder="Food name (e.g., Veg Biryani)"
-      value ={form.foodName}
-      onChange={handleChange}
-      className ="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
-      />
+    createPlate(newPlate);
+    setPlates([...getPlates()]);
+    setForm(INITIAL_FORM);
+  }
 
-      <input 
-      name="quantity"
-      placeholder="Quantity (e.g., persons)"
-      value ={form.quantity}
-      onChange={handleChange}
-      className ="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
-      />
+  return (
+    <div className="p-8 max-w-3xl">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Donor Dashboard</h1>
+        {/* Welcome Message */}
+        <span className="text-sm text-zinc-500">
+          Welcome, {user.firstName || "Donor"}
+        </span>
+      </div>
+
+      {/* Create Plate Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="border border-zinc-800 rounded-xl p-6 mb-8 space-y-4"
+      >
+        <h2 className="font-bold text-lg">Create Plate</h2>
+        {error && <p className="text-red-400 text-sm">{error}</p>}
+
+        <input
+          name="foodName"
+          placeholder="Food name (e.g., Veg Biryani)"
+          value={form.foodName}
+          onChange={handleChange}
+          className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
+        />
+
+        <input
+          name="quantity"
+          placeholder="Quantity (e.g., 5 persons)"
+          value={form.quantity}
+          onChange={handleChange}
+          className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
+        />
 
         <input
           name="pickupBy"
@@ -89,22 +110,18 @@ return(
           className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
         />
 
-        <button 
-        type="submit"
-        className ="bg-emerald-500 text-black px-4 py-2 rounded-lg font-bold hover:bg-emerald-400 transition"
->
-  Post Plate
-</button>
-    </form>
+        <button
+          type="submit"
+          className="bg-emerald-500 text-black px-4 py-2 rounded-lg font-bold hover:bg-emerald-400 transition"
+        >
+          Post Plate
+        </button>
+      </form>
 
-
-
- {/* Plates List */}
+      {/* Plates List */}
       <div className="space-y-4">
         {plates.length === 0 && (
-          <p className="text-zinc-400 text-sm">
-            No plates created yet.
-          </p>
+          <p className="text-zinc-400 text-sm">No plates created yet.</p>
         )}
 
         {plates.map((plate) => (
@@ -125,5 +142,3 @@ return(
     </div>
   );
 }
-
-
