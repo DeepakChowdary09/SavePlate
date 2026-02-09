@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # 1. THE DATABASE (PostgreSQL + PostGIS)
+  # Stores Locations and Orders.
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: saveplate_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: saveplate
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  # 2. THE CACHE (Redis)
+  # Handles high-speed locking and caching.
+  redis:
+    image: redis:alpine
+    container_name: saveplate_redis
+    ports:
+      - "6379:6379"
+
+  # 3. THE BACKEND (Go Lang)
+  # We will build this in the next step.
+  # For now, we just define where it lives.
+  backend:
+    build: ./backend
+    container_name: saveplate_backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+    environment:
+      DB_HOST: db
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: saveplate
+      REDIS_HOST: redis
+
+  # 4. THE AI BRAIN (Python)
+  # We will build this later.
+  ai-agent:
+    build: ./ai-agent
+    container_name: saveplate_ai
+    ports:
+      - "8000:8000"
+
+volumes:
+  db_data:
