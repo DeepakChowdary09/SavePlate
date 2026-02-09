@@ -1,144 +1,86 @@
 "use client";
 
 import { useState } from "react";
-import { useUser } from "@clerk/nextjs"; // 1. Import Clerk hook
-import { Plate } from "@/types/plate";
-import { createPlate, getPlates } from "@/Services/plate.service";
-
-const INITIAL_FORM = {
-  foodName: "",
-  quantity: "",
-  pickupBy: "",
-};
+import { useUser } from "@clerk/nextjs";
+import { createOrder } from "@/Services/api";
+import { Zap, Loader2, Server } from "lucide-react";
 
 export default function DonorDashboard() {
-  // 2. Get current user context
-  const { user, isLoaded, isSignedIn } = useUser();
+  const { user, isLoaded } = useUser();
+  const [loading, setLoading] = useState(false);
+  const [lastId, setLastId] = useState<string | null>(null);
+  
+  const [form, setForm] = useState({ foodName: "", quantity: "" });
 
-  const [plates, setPlates] = useState<Plate[]>(getPlates());
-  const [form, setForm] = useState(INITIAL_FORM);
-  const [error, setError] = useState<string | null>(null);
+  if (!isLoaded) return <div className="p-8">Initializing System...</div>;
 
-  // 3. LOADING STATE: Wait for Clerk to load
-  if (!isLoaded) {
-    return <div className="p-8">Loading dashboard...</div>;
-  }
-
-  // 4. ROLE CHECK: Restrict access specifically to 'donor' role
-  if (!isSignedIn || user?.publicMetadata.role !== "donor") {
-    return (
-      <div className="p-8 text-red-500 font-bold">
-        Access denied: This page is restricted to registered Donors.
-      </div>
-    );
-  }
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  }
-
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
-
-    // TypeScript safety check
-    if (!user) return;
-
-    if (!form.foodName || !form.quantity || !form.pickupBy) {
-      setError("All fields are required.");
-      return;
+    setLoading(true);
+    try {
+      await createOrder(form.foodName, form.quantity);
+      setLastId(crypto.randomUUID().slice(0,8)); // Mock ID for UI feedback
+      setForm({ foodName: "", quantity: "" });
+    } catch (err) {
+      alert("Error: Ensure Go Backend is running on Port 8080");
+    } finally {
+      setLoading(false);
     }
-
-    const newPlate: Plate = {
-      id: crypto.randomUUID(),
-      foodName: form.foodName,
-      quantity: form.quantity,
-      pickupBy: form.pickupBy,
-      status: "POSTED",
-      // 5. IMPORTANT: Attach the real User ID to the plate
-      // (Ensure your Plate interface in "@/types/plate" includes a 'donorId' field)
-      donorId: user.id, 
-    };
-
-    createPlate(newPlate);
-    setPlates([...getPlates()]);
-    setForm(INITIAL_FORM);
   }
 
   return (
-    <div className="p-8 max-w-3xl">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Donor Dashboard</h1>
-        {/* Welcome Message */}
-        <span className="text-sm text-zinc-500">
-          Welcome, {user.firstName || "Donor"}
-        </span>
+    <div className="p-8 max-w-2xl mx-auto text-white">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">System Injector</h1>
+          <p className="text-zinc-400">Inject load into the logistics simulator.</p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"/>
+            <span className="text-xs font-mono text-emerald-500">UPLINK ACTIVE</span>
+        </div>
       </div>
 
-      {/* Create Plate Form */}
-      <form
-        onSubmit={handleSubmit}
-        className="border border-zinc-800 rounded-xl p-6 mb-8 space-y-4"
-      >
-        <h2 className="font-bold text-lg">Create Plate</h2>
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+      <form onSubmit={handleSubmit} className="bg-zinc-900/50 border border-zinc-800 p-8 rounded-2xl backdrop-blur-xl">
+        <div className="space-y-6">
+          <div>
+            <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Payload Type</label>
+            <input
+              value={form.foodName}
+              onChange={(e) => setForm({ ...form, foodName: e.target.value })}
+              placeholder="e.g. Ice Cream (Perishable)"
+              className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 mt-2 focus:border-emerald-500 outline-none transition text-white"
+            />
+          </div>
 
-        <input
-          name="foodName"
-          placeholder="Food name (e.g., Veg Biryani)"
-          value={form.foodName}
-          onChange={handleChange}
-          className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
-        />
+          <div>
+            <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Payload Weight</label>
+            <input
+              value={form.quantity}
+              onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+              placeholder="e.g. 50kg"
+              className="w-full bg-black border border-zinc-800 rounded-xl px-4 py-3 mt-2 focus:border-emerald-500 outline-none transition text-white"
+            />
+          </div>
 
-        <input
-          name="quantity"
-          placeholder="Quantity (e.g., 5 persons)"
-          value={form.quantity}
-          onChange={handleChange}
-          className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
-        />
-
-        <input
-          name="pickupBy"
-          placeholder="Pickup by (e.g., 9:30 PM)"
-          value={form.pickupBy}
-          onChange={handleChange}
-          className="w-full bg-black border border-zinc-800 rounded-lg px-3 py-2"
-        />
-
-        <button
-          type="submit"
-          className="bg-emerald-500 text-black px-4 py-2 rounded-lg font-bold hover:bg-emerald-400 transition"
-        >
-          Post Plate
-        </button>
+          <button
+            disabled={loading}
+            className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-4 rounded-xl transition flex items-center justify-center gap-2"
+          >
+            {loading ? <Loader2 className="animate-spin" /> : <Server size={20} />}
+            {loading ? "Transmitting..." : "INITIATE DISPATCH SEQUENCE"}
+          </button>
+        </div>
       </form>
 
-      {/* Plates List */}
-      <div className="space-y-4">
-        {plates.length === 0 && (
-          <p className="text-zinc-400 text-sm">No plates created yet.</p>
-        )}
-
-        {plates.map((plate) => (
-          <div
-            key={plate.id}
-            className="border border-zinc-800 rounded-lg p-4"
-          >
-            <div className="font-bold">{plate.foodName}</div>
-            <div className="text-sm text-zinc-400">
-              {plate.quantity} • Pickup by {plate.pickupBy}
-            </div>
-            <div className="text-xs mt-1 text-emerald-400">
-              {plate.status}
-            </div>
-          </div>
-        ))}
-      </div>
+      {lastId && (
+        <div className="mt-6 p-4 border border-emerald-500/20 bg-emerald-500/10 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2">
+           <Zap className="text-emerald-500" size={18} />
+           <span className="text-emerald-400 font-mono text-sm">
+             Injection Successful. Trace ID: {lastId}
+           </span>
+        </div>
+      )}
     </div>
   );
 }

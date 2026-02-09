@@ -1,86 +1,59 @@
-"use client"; // Tells Next.js this component runs in the browser
+"use client";
 
-import { useState } from "react"; 
-import { useUser } from "@clerk/nextjs"; // 1. Import Clerk hook
-import { Plate } from "@/types/plate"; 
-import { getPlates, acceptPlate } from "@/Services/plate.service"; 
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import { fetchDrivers } from "@/Services/api";
+import { Activity, Globe } from "lucide-react";
+
+// Lazy load map (Client side only)
+const Map = dynamic(() => import("@/components/Map"), { ssr: false });
 
 export default function VolunteerDashboard() {
-  // 2. Get the current user and loading status from Clerk
-  const { user, isLoaded, isSignedIn } = useUser();
-  
-  // Initialize 'plates' state
-  const [plates, setPlates] = useState<Plate[]>(getPlates());
+  const [driverCount, setDriverCount] = useState(0);
 
-  // 3. LOADING STATE: Wait for Clerk to load before checking roles
-  if (!isLoaded) {
-    return <div className="p-8">Loading user data...</div>;
-  }
-
-  // 4. ROLE CHECK: If not signed in OR not a volunteer, deny access
-  if (!isSignedIn || user?.publicMetadata.role !== "volunteer") {
-    return (
-      <div className="p-8 text-red-500 font-bold">
-        Access denied: This page is restricted to registered volunteers.
-      </div>
-    );
-  }
-
-  // Function triggered when the "Accept" button is clicked
-  function handleAccept(plateId: string) {
-    // Safety check to ensure user exists (TypeScript safety)
-    if (!user) return;
-
-    // 5. Use the REAL user ID from Clerk instead of the mock ID
-    acceptPlate(plateId, user.id); 
-    
-    // Re-fetch and update UI
-    setPlates([...getPlates()]);
-  }
-
-  const availablePlates = plates.filter(
-    (p) => p.status === "POSTED"
-  );
+  // Poll for stats every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const data = await fetchDrivers();
+      setDriverCount(data.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="p-8 max-w-3xl"> 
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">
-          Volunteer Dashboard
-        </h1>
-        {/* Optional: Show who is logged in */}
-        <span className="text-sm text-zinc-500">
-          Hello, {user.firstName || "Volunteer"}
-        </span>
+    <div className="h-[calc(100vh-64px)] flex flex-col bg-zinc-950">
+      {/* HUD Header */}
+      <div className="h-16 border-b border-zinc-800 bg-black/50 flex items-center px-8 justify-between backdrop-blur-md z-10">
+        <div className="flex items-center gap-3">
+          <Globe className="text-emerald-500" />
+          <h1 className="font-bold tracking-tight text-white">Global Fleet Monitor</h1>
+        </div>
+        <div className="flex gap-6">
+          <div className="flex flex-col items-end">
+             <span className="text-[10px] text-zinc-500 uppercase font-bold">Active Agents</span>
+             <span className="font-mono text-emerald-400 font-bold text-xl">{driverCount}</span>
+          </div>
+          <div className="flex flex-col items-end">
+             <span className="text-[10px] text-zinc-500 uppercase font-bold">Latency</span>
+             <span className="font-mono text-emerald-400 font-bold text-xl">12ms</span>
+          </div>
+        </div>
       </div>
 
-      {availablePlates.length === 0 && (
-        <p className="text-zinc-400 text-sm">
-          No available pickups right now.
-        </p>
-      )}
-
-      <div className="space-y-4"> 
-        {availablePlates.map((plate) => (
-          <div
-            key={plate.id} 
-            className="border border-zinc-800 rounded-lg p-4 flex justify-between items-center"
-          >
-            <div>
-              <div className="font-bold">{plate.foodName}</div>
-              <div className="text-sm text-zinc-400">
-                {plate.quantity} • Pickup by {plate.pickupBy}
-              </div>
-            </div>
-
-            <button
-              onClick={() => handleAccept(plate.id)}
-              className="bg-emerald-500 text-black px-4 py-2 rounded-lg font-bold hover:bg-emerald-400 transition"
-            >
-              Accept
-            </button>
+      {/* The Map */}
+      <div className="flex-1 relative z-0">
+        <Map />
+        
+        {/* Overlay Card */}
+        <div className="absolute bottom-8 left-8 bg-black/90 backdrop-blur border border-zinc-800 p-5 rounded-2xl z-[500] max-w-sm shadow-2xl">
+          <div className="flex items-center gap-2 mb-2">
+             <Activity size={16} className="text-emerald-500" />
+             <h4 className="text-xs font-bold text-zinc-400 uppercase">Simulation Status</h4>
           </div>
-        ))}
+          <p className="text-sm text-zinc-300 leading-relaxed">
+            Ghost Fleet operating autonomously. Agents are polling PostGIS for nearest orders.
+          </p>
+        </div>
       </div>
     </div>
   );
