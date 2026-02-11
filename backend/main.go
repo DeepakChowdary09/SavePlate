@@ -30,38 +30,37 @@ type Order struct {
 	Status   string `json:"status"`
 }
 
-// Log represents an AI decision event
+// AILog represents an AI decision event
 type AILog struct {
 	ID        int    `json:"id"`
 	Timestamp string `json:"timestamp"`
 	Agent     string `json:"agent"`
 	Color     string `json:"color"`
 	Message   string `json:"message"`
-	Reasoning string `json:"reasoning,omitempty"`
 }
 
-// --- 2. IN-MEMORY STATE (Simulating a Database for Speed) ---
+// --- 2. IN-MEMORY STATE ---
 var (
-	drivers  = make(map[int]*Driver)
-	orders   = make([]Order, 0)
-	logs     = make([]AILog, 0)
-	mutex    = &sync.RWMutex{} // Protects map from concurrent writes
+	drivers = make(map[int]*Driver)
+	orders  = make([]Order, 0)
+	logs    = make([]AILog, 0)
+	mutex   = &sync.RWMutex{} // Protects map from concurrent writes
 )
 
 func main() {
 	// Initialize the "Ghost Fleet"
 	initSimulation()
 
-	// Start the background simulation loop (The "Game Engine")
+	// Start the background simulation loop
 	go startSimulationLoop()
 
 	// --- 3. API SERVER SETUP ---
 	r := gin.Default()
 
-	// Enable CORS (Allow Frontend to connect)
+	// Enable CORS
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // Allow all for MVE demo
-		AllowMethods:     []string{"GET", "POST"},
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
@@ -70,12 +69,12 @@ func main() {
 	// Group routes under /api
 	api := r.Group("/api")
 	{
-		// Endpoint 1: Get all drivers (For the Map)
+		// Endpoint 1: Get all drivers
 		api.GET("/drivers", func(c *gin.Context) {
 			mutex.RLock()
 			defer mutex.RUnlock()
 			
-			// Convert map to list
+			// Convert map to list for Frontend
 			driverList := make([]*Driver, 0, len(drivers))
 			for _, d := range drivers {
 				driverList = append(driverList, d)
@@ -83,7 +82,7 @@ func main() {
 			c.JSON(http.StatusOK, driverList)
 		})
 
-		// Endpoint 2: Receive an Order (From Donor Dashboard)
+		// Endpoint 2: Receive an Order (SMART DISPATCH LOGIC HERE)
 		api.POST("/orders", func(c *gin.Context) {
 			var newOrder Order
 			if err := c.BindJSON(&newOrder); err != nil {
@@ -91,26 +90,66 @@ func main() {
 				return
 			}
 			
-			// Simulate "Processing"
 			newOrder.ID = fmt.Sprintf("ORD-%d", rand.Intn(10000))
 			newOrder.Status = "PENDING"
 			
-			mutex.Lock()
+			mutex.Lock() // LOCK STATE
+			
+			// --- THE "BRAIN" LOGIC STARTS HERE ---
+			
+			// 1. Find the first AVAILABLE driver
+			var assignedDriver *Driver
+			for _, driver := range drivers {
+				if driver.Status == "AVAILABLE" {
+					assignedDriver = driver
+					break // Found one! Stop looking.
+				}
+			}
+
+			if assignedDriver != nil {
+				// 2. Assign the Order (Turn them RED)
+				assignedDriver.Status = "BUSY"
+				
+				// 3. Create a Success Log
+				newLog := AILog{
+					ID:        rand.Intn(100000),
+					Timestamp: time.Now().Format("15:04:05"),
+					Agent:     fmt.Sprintf("DISPATCH (Driver %d)", assignedDriver.ID),
+					Color:     "green",
+					Message:   fmt.Sprintf("Assigned to Order: %s (%s)", newOrder.FoodName, newOrder.Quantity),
+				}
+				// Prepend log (add to top)
+				logs = append([]AILog{newLog}, logs...)
+
+				// 4. Auto-complete order after 10 seconds (Turn back to GREEN)
+				go func(d *Driver) {
+					time.Sleep(10 * time.Second)
+					mutex.Lock()
+					d.Status = "AVAILABLE"
+					mutex.Unlock()
+				}(assignedDriver)
+
+			} else {
+				// No drivers available!
+				newLog := AILog{
+					ID:        rand.Intn(100000),
+					Timestamp: time.Now().Format("15:04:05"),
+					Agent:     "SYSTEM_ERROR",
+					Color:     "red",
+					Message:   "Fleet Saturation: No Drivers Available!",
+				}
+				logs = append([]AILog{newLog}, logs...)
+			}
+			
+			// --- THE "BRAIN" LOGIC ENDS HERE ---
+
 			orders = append(orders, newOrder)
-			// Add a fake log to show activity
-			logs = append([]AILog{{
-				ID:        rand.Intn(100000),
-				Timestamp: time.Now().Format("15:04:05"),
-				Agent:     "INGEST",
-				Color:     "text-blue-400",
-				Message:   fmt.Sprintf("New Order Recieved: %s (%s)", newOrder.FoodName, newOrder.Quantity),
-			}}, logs...)
-			mutex.Unlock()
+			mutex.Unlock() // UNLOCK STATE
 
 			c.JSON(http.StatusOK, newOrder)
 		})
 
-		// Endpoint 3: Get AI Logs (For NGO Dashboard)
+		// Endpoint 3: Get AI Logs
 		api.GET("/logs", func(c *gin.Context) {
 			mutex.RLock()
 			defer mutex.RUnlock()
@@ -130,14 +169,11 @@ func main() {
 // --- 4. SIMULATION LOGIC ---
 
 func initSimulation() {
-	// Bangalore Center Coordinates: 12.9716, 77.5946
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	for i := 1; i <= 50; i++ {
-		// FORCE 50/50 SPLIT
-		// If ID is Even -> Van (Truck)
-		// If ID is Odd  -> Bike
+	// ✅ WE KEPT THIS AT 10 DRIVERS FOR TESTING
+	for i := 1; i <= 5; i++ {
 		vehicleType := "Bike"
 		if i%2 == 0 {
 			vehicleType = "Van"
@@ -145,26 +181,23 @@ func initSimulation() {
 
 		drivers[i] = &Driver{
 			ID:      i,
-			// Random scatter around Bangalore (+/- 0.05 degrees)
 			Lat:     12.9716 + (rand.Float64()-0.5)*0.1,
 			Lng:     77.5946 + (rand.Float64()-0.5)*0.1,
 			Status:  "AVAILABLE",
-			Vehicle: vehicleType, // Use our forced type
+			Vehicle: vehicleType, 
 		}
 	}
-	fmt.Println("✅ 50 Ghost Drivers Initialized (25 Bikes / 25 Vans).")
+	fmt.Println("✅ 10 Ghost Drivers Initialized for Testing.")
 }
 
 func startSimulationLoop() {
-	// Updates every 1 second (High Frequency)
 	ticker := time.NewTicker(1 * time.Second)
 	defer ticker.Stop()
 
 	for range ticker.C {
 		mutex.Lock()
 		for _, d := range drivers {
-			// Simulate random driving movement
-			// 0.001 degrees is roughly 100 meters per second (Fast!)
+			// Simulate driving
 			d.Lat += (rand.Float64() - 0.5) * 0.001
 			d.Lng += (rand.Float64() - 0.5) * 0.001
 		}
