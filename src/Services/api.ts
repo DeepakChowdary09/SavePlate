@@ -1,8 +1,34 @@
-// This points to your Go Backend running in Docker/Localhost
+// src/services/api.ts
+
 const API_URL = "http://localhost:8080/api";
 
-// 1. INJECTOR: Sends a simulated order to the Go Engine
-export async function createOrder(foodName: string, quantity: string) {
+// 1. WATCHER: Gets the live location of 50 Ghost Drivers
+export async function fetchDrivers() {
+  try {
+    const res = await fetch(`${API_URL}/drivers`, { cache: 'no-store' });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch (error) {
+    console.error("Driver Fetch Error:", error);
+    return []; 
+  }
+}
+
+// 2. AUDITOR: Gets the reasoning logs (Renamed to match ControlPanel)
+export async function fetchLogs() {
+  try {
+    const res = await fetch(`${API_URL}/logs`, { cache: 'no-store' });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch (error) {
+    console.error("Log Fetch Error:", error);
+    return [];
+  }
+}
+
+// 3. INJECTOR: Sends a simulated order
+// I've updated this to handle both manual inputs AND the "Mock Button"
+export async function createOrder(foodName: string = "Surplus Rice", quantity: string = "5kg") {
   try {
     const res = await fetch(`${API_URL}/orders`, {
       method: "POST",
@@ -11,30 +37,6 @@ export async function createOrder(foodName: string, quantity: string) {
     });
     return await res.json();
   } catch (error) {
-    console.error("Backend Disconnected");
-    throw error;
-  }
-}
-
-// 2. WATCHER: Gets the live location of 50 Ghost Drivers
-export async function fetchDrivers() {
-  try {
-    const res = await fetch(`${API_URL}/drivers`, { cache: 'no-store' });
-    if (!res.ok) return [];
-    return await res.json();
-  } catch (error) {
-    return []; // Return empty if backend is offline
-  }
-}
-
-// 3. AUDITOR: Gets the reasoning logs from the AI Agent
-export async function fetchAILogs() {
-  try {
-    // In a real scenario, this endpoint exists. 
-    // For MVE, we might simulate this in the frontend if the Python service isn't ready.
-    const res = await fetch(`${API_URL}/logs`, { cache: 'no-store' });
-    return await res.json();
-  } catch (error) {
-    return [];
+    console.error("Order Error:", error);
   }
 }
