@@ -1,10 +1,3 @@
-Gemini said
-This is the moment your project transforms from "Code" to a "Product."
-
-Recruiters spend about 6 seconds looking at a GitHub repo. They don't run the code; they scan the README. If it looks professional, you get the interview.
-
-Here is a Senior-Level README written specifically for you. It highlights the "Hard Engineering" (Concurrency, Mutexes, Latency) rather than just the "Features."
-
 🛠️ Step 1: Create the File
 Create a new file named README.md in the root folder of your project (outside backend or frontend).
 
