@@ -79,7 +79,7 @@ export default function DashboardLayout({
               />
               <div>
                 <p className="text-sm font-medium text-white">
-                  System Online
+                  System is Online
                 </p>
                 <p className="text-xs text-emerald-400">
                   Secure Session Active
