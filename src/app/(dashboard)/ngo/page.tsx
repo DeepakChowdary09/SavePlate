@@ -64,7 +64,7 @@ function generateFakeLog(): AILog {
       agent: "AI_CORE", 
       color: "text-emerald-400", 
       message: "Dispatch Decision: Assigning Driver #42", 
-      reasoning: "Driver #42 (Bike) selected. Traffic is Heavy. Payload is Perishable." 
+      reasoning: "Driver #42 (Bike) selected. Traffic is Moderate. Payload is Perishable." 
     },
   ];
   const random = types[Math.floor(Math.random() * types.length)];
