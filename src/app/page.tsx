@@ -189,7 +189,7 @@ interface StatProps {
 function Stat({ label, value }: StatProps) {
   return (
     <div>
-      <div className="text-5xl font-mono font-bold bg-gradient-to-r from-white to-emerald-400 bg-clip-text text-transparent">
+      <div className="text-5xl font-mono font-bold bg-gradient-to-r from-white to-emerald-500 bg-clip-text text-transparent">
         {value}
       </div>
       <div className="text-xs font-mono text-emerald-500 uppercase tracking-widest mt-2">
@@ -273,7 +273,7 @@ function PrimaryCTA() {
 function Footer() {
   return (
     <footer className="py-10 border-t border-white/5 text-center text-zinc-600 text-xs font-mono">
-      SYSTEM DESIGN PROJECT • BUILT WITH NEXT.JS + GO + POSTGIS
+      SYSTEM DESIGN Simulation • BUILT WITH NEXT.JS + GO + POSTGIS
     </footer>
   );
 }
