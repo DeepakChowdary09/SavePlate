@@ -41,8 +41,9 @@ export default function StatsPanel() {
 
   return (
 <div className="absolute bottom-4 left-4 z-[1000] flex flex-col gap-3">
+  
       {/* CARD 1: FLEET STATUS */}
-      <div className="bg-black/80 backdrop-blur-md p-4 rounded-lg border-l-4 border-blue-500 shadow-2xl w-64">
+      <div className="bg-black/80 backdrop-blur-md p-4 rounded-lg border-l-4 border-blue-500 shadow-2xl w-56">
         <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest">Fleet Status</h3>
         <div className="flex items-end gap-2 mt-1">
           <span className="text-3xl font-mono text-white font-bold">{metrics.totalDrivers}</span>

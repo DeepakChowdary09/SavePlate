@@ -1,19 +1,20 @@
 import Map from "@/components/Map";
 import ControlPanel from "@/components/ControlPanel";
 import StatsPanel from "@/components/StatsPanel";
-import DonationForm from "@/components/DonationForm"; // <--- 1. Import This
+import DonationForm from "@/components/DonationForm";
 
 export default function VolunteerPage() {
   return (
-    <div className="relative w-full h-screen bg-gray-900">
+    // The layout fix: calc(100vh - 6rem) stops the map from bleeding off the screen
+    <div className="relative w-full h-[calc(100vh-6rem)] bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 shadow-2xl mt-2">
       
-      {/* Top Left: Stats */}
+      {/* Bottom Left: Stats */}
       <StatsPanel />
 
-      {/* Top Right: Logs */}
+      {/* Bottom Right: Logs */}
       <ControlPanel />
 
-      {/* Bottom Center: The Real Donation Form */}
+      {/* Top Right: The Real Donation Form */}
       <DonationForm /> 
 
       {/* Background: Map */}
