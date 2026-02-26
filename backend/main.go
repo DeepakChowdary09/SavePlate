@@ -29,7 +29,9 @@ func main() {
 		api.GET("/logs", getLogs)
 		api.POST("/orders", createOrder)
 	}
-
-	fmt.Println("🚀 SavePlate Backend is Running cleanly on :8080")
-	r.Run(":8080")
-}
+port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Fallback for local testing
+	}
+	fmt.Println("🚀 SavePlate Backend is Running cleanly on :" + port)
+	r.Run(":" + port)
