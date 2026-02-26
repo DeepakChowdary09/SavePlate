@@ -1,6 +1,7 @@
 // src/services/api.ts
 
-const API_URL = "http://localhost:8080/api";
+// If Vercel gives us a cloud URL, use it. Otherwise, fallback to your laptop.
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
 
 // 1. WATCHER: Gets the live location of 50 Ghost Drivers
 export async function fetchDrivers() {
