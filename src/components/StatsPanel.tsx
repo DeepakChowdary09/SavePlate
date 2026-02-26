@@ -40,7 +40,7 @@ export default function StatsPanel() {
   }, []);
 
   return (
-    <div className="absolute top-4 left-4 z-[1000] flex flex-col gap-3">
+<div className="absolute bottom-4 left-4 z-[1000] flex flex-col gap-3">
       {/* CARD 1: FLEET STATUS */}
       <div className="bg-black/80 backdrop-blur-md p-4 rounded-lg border-l-4 border-blue-500 shadow-2xl w-64">
         <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest">Fleet Status</h3>

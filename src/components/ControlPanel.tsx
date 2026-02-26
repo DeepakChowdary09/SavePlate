@@ -35,7 +35,7 @@ export default function ControlPanel() {
   };
 
   return (
-    <div className="absolute top-4 right-4 w-96 bg-black/90 text-green-400 p-4 rounded-lg shadow-2xl border border-green-800 z-[1000] font-mono text-sm">
+    <div className="absolute bottom-4 right-4 w-[28rem] bg-black/90 text-green-400 p-4 rounded-lg shadow-2xl border border-green-800 z-[1000] font-mono text-sm">
       <div className="flex justify-between items-center mb-4 border-b border-green-800 pb-2">
         <h2 className="font-bold flex items-center gap-2">
           <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
