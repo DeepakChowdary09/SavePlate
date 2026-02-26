@@ -11,7 +11,7 @@ func initSimulation() {
 	defer mutex.Unlock()
 
 	// 5 DRIVERS (3 Bikes, 2 Vans)
-	for i := 1; i <= 20; i++ {
+	for i := 1; i <= 10; i++ {
 		vehicleType := "Bike"
 		if i%2 == 0 {
 			vehicleType = "Van"
@@ -25,7 +25,7 @@ func initSimulation() {
 			Vehicle: vehicleType,
 		}
 	}
-	fmt.Println("✅ Simulation Engine Started: 5 Drivers Active.")
+	fmt.Println("✅ Simulation Engine Started: 10 Drivers Active.")
 }
 
 func startSimulationLoop() {
