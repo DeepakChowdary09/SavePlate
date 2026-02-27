@@ -43,7 +43,7 @@ export default function StatsPanel() {
 <div className="absolute bottom-4 left-4 z-[1000] flex flex-col gap-3">
   
       {/* CARD 1: FLEET STATUS */}
-      <div className="bg-black/30 backdrop-blur-sm p-4 rounded-lg border-l-4 border-blue-500 shadow-2xl w-64 transition-all hover:bg-black/60">
+      <div className="bg-transparent backdrop-blur-none p-4 rounded-lg border-l-4 border-blue-500 w-56 drop-shadow-lg transition-all hover:bg-black/40">
         <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest">Fleet Status</h3>
         <div className="flex items-end gap-2 mt-1">
           <span className="text-3xl font-mono text-white font-bold">{metrics.totalDrivers}</span>
@@ -52,7 +52,7 @@ export default function StatsPanel() {
       </div>
 
       {/* CARD 2: REAL-TIME LATENCY */}
-      <div className="bg-black/30 backdrop-blur-sm p-4 rounded-lg border-l-4 border-green-500 shadow-2xl w-64 transition-all hover:bg-black/60">
+      <div className="bg-transparent backdrop-blur-none p-4 rounded-lg border-l-4 border-green-500 w-56 drop-shadow-lg transition-all hover:bg-black/40">
         <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest">System Latency</h3>
         <div className="flex items-end gap-2 mt-1">
           <span className={`text-3xl font-mono font-bold ${metrics.latency > 100 ? "text-red-500" : "text-green-400"}`}>
