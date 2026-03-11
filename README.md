@@ -1,10 +1,3 @@
-🛠️ Step 1: Create the File
-Create a new file named README.md in the root folder of your project (outside backend or frontend).
-
-📄 Step 2: Paste This Content
-(Copy this entire block)
-
-Markdown
 
 # SavePlate: Hyper-Local Food Rescue Logistics 🍛 -> 🚚
 
