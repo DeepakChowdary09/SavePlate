@@ -2,7 +2,7 @@
 # SavePlate: Hyper-Local Food Rescue Logistics 🍛 -> 🚚
 
 
-![Tech Stack](https://img.shields.io/badge/Backend-Go_1.21-blue)
+
 ![Tech Stack](https://img.shields.io/badge/Frontend-Next.js_14-black)
 
 **SavePlate** is a real-time logistics engine designed to solve the "Last Mile" problem in food rescue. It simulates a fleet of delivery agents to match surplus food donations with the nearest available volunteer in under 15ms.
