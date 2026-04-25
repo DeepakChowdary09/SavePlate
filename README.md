@@ -16,7 +16,7 @@ India wastes 67 million tonnes of food annually, often due to **logistics failur
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 
 The system uses a **Event-Driven Architecture** where the Frontend polls the Backend for state changes, ensuring a "Live Dashboard" feel without heavy WebSocket overhead for this MVP.
 
