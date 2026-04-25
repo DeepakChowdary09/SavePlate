@@ -14,8 +14,6 @@ India wastes 67 million tonnes of food annually, often due to **logistics failur
 3.  **Locks** the driver's state (Mutex Concurrency) to prevent double-booking.
 4.  **Dispatches** the pickup instructions instantly.
 
----
-
 ##  System Architecture
 
 The system uses a **Event-Driven Architecture** where the Frontend polls the Backend for state changes, ensuring a "Live Dashboard" feel without heavy WebSocket overhead for this MVP.
