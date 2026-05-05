@@ -57,7 +57,7 @@ export default function ControlPanel() {
         <div ref={bottomRef} />
       </div>
 
-      {/* The Chaos Button */}
+      {/* The Chaos Butto*/}
       <button
         onClick={handleInjectOrder}
         className="w-full bg-green-900/30 hover:bg-green-800/50 text-green-300 border border-green-600 py-2 rounded uppercase text-xs tracking-wider transition-all active:scale-95"
