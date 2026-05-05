@@ -44,7 +44,7 @@ export default function ControlPanel() {
         <span className="text-xs text-green-600">LIVE</span>
       </div>
 
-      {/* The Terminal Window */}
+      {/* The Terminal Windo */}
       <div className="h-64 overflow-y-auto space-y-2 mb-4 scrollbar-thin scrollbar-thumb-green-900 scrollbar-track-black">
         {logs.length === 0 && <div className="text-gray-500 italic">Waiting for system events...</div>}
         {logs.map((log) => (
