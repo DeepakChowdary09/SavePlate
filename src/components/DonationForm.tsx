@@ -32,7 +32,7 @@ export default function DonationForm() {
         <div>
           <input
             type="text"
-            placeholder="What food is i? (e.g. Rice)"
+            placeholder="What food is ? (e.g. Rice)"
             value={food}
             onChange={(e) => setFood(e.target.value)}
             className="w-full bg-gray-900/50 border border-gray-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
