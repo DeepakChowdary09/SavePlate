@@ -3,7 +3,7 @@
 
 **SavePlate** is a real-time logistics engine designed to solve the "Last Mile" problem in food rescue. It simulates a fleet of delivery agents to match surplus food donations with the nearest available volunteer in under 15ms.
 
-##  The Core Problem
+##  The Core Proble
 
 India wastes 67 million tonnes of food annually, often due to **logistics failures**—food spoils before a volunteer can reach it. Existing manual coordination is too slow.
 
