@@ -25,7 +25,7 @@ export default function DonationForm() {
   return (
  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-72 bg-transparent backdrop-blur-none p-6 rounded-2xl border border-white/20 z-[1000] drop-shadow-lg transition-all hover:bg-black/40">
       <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-        🍛 <span className="bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">Donate Food</span>
+        🍛 <span className="bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">Donat Food</span>
       </h3>
       
       <form onSubmit={handleSubmit} className="space-y-3">
