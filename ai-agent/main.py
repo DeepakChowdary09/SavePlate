@@ -4,4 +4,4 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"status": "AI Agent Onlin", "brain_capacity": "100%"}
+    return {"status": "AI Agent Online", "brain_capacity": "100%"}
