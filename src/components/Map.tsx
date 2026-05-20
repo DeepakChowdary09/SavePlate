@@ -7,7 +7,7 @@ import L from "leaflet";
 import { fetchDrivers } from "@/Services/api";
 
 // --- 1. LOCAL ASSETS (The "Pro" Way) ---
-// Note: We use paths starting with "/" which points to the 'public' folde
+// Note: We use paths starting with "/" which points to the 'public' folder
 
 const bikeIcon = L.icon({
   iconUrl: " /icons/bike.jpg  ", // <--- LOOKS IN YOUR PUBLIC FOLDER
