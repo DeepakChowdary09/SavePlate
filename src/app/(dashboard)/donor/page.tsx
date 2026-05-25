@@ -19,7 +19,7 @@ export default function DonorDashboard() {
     setLoading(true);
     try {
       await createOrder(form.foodName, form.quantity);
-      setLastId(crypto.randomUUID().slice(0,8)); // Mock ID for UI feedback
+      setLastId(crypto.randomUUID().slice(0,8)); // Mock ID for UI 
       setForm({ foodName: "", quantity: "" });
     } catch (err) {
       alert("Error: Ensure Go Backend is running on Port 8080");
