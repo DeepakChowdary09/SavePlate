@@ -9,7 +9,7 @@ export default function NGODashboard() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // For  Demo: We generate fake logs if backend isn't sending them yet
+      // For MVE Demo: We generate fake logs if backend isn't sending them yet
       const newLog = generateFakeLog(); 
       setLogs((prev) => [newLog, ...prev].slice(0, 15)); 
     }, 2500);
