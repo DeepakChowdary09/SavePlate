@@ -13,7 +13,7 @@ export default function DonationForm() {
     if (!food || !qty) return;
 
     setLoading(true);
-    // Call the  Backend
+    // Call the Go Backend
     await createOrder(food, qty);
     
     // Reset form
