@@ -32,7 +32,7 @@ export default function DonorDashboard() {
     <div className="p-8 max-w-2xl mx-auto text-white">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">System Injector</h1>
+          <h1 className="text-3xl font-bold tracking-tight">System </h1>
           <p className="text-zinc-400"> Click Here to Inject load into the logistics simulator.</p>
         </div>
         <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
