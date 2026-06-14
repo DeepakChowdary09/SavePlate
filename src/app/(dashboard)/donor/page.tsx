@@ -22,7 +22,7 @@ export default function DonorDashboard() {
       setLastId(crypto.randomUUID().slice(0,8)); // Mock ID for UI feedback
       setForm({ foodName: "", quantity: "" });
     } catch (err) {
-      alert("Error: Ensure Go  Backend is running on Port 8080");
+      alert("Error: Ensure Go   is running on Port 8080");
     } finally {
       setLoading(false);
     }
