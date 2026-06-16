@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy ALL files (Source code + go.mod)
 COPY . .
 
-# VITAL FIX: This command scans your code and downloads the missing libraries (Gin/CORS)
+# VITAL FIX: This  scans your code and downloads the missing libraries (Gin/CORS)
 RUN go mod tidy
 
 # Build the application
